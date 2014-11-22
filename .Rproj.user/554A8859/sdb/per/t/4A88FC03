@@ -1,0 +1,17 @@
+{
+    "contents" : "rankall <- function(outcome,num=\"best\") {\n  ## Read outcome data\n  ## Check that state and outcome are valid\n  ## Return hospital name in that state with lowest 30-day death\n  ## rate\n  options(warn=-1)\n\n  mm<-data.frame(id=0,nobs=0)\n  mm3<-data.frame(hospital=0,state=0)\n  if(outcome == \"heart attack\")\n    outcol<-11\n  else if(outcome==\"heart failure\")\n    outcol<-17\n  else if(outcome==\"pneumonia\")\n    outcol<-23\n  else\n    stop(\"invalid outcome\")\n  outdata<-read.csv(\"outcome-of-care-measures.csv\",colClasses=\"character\",)\n  \n  unstate<-unique(outdata[,\"State\"])\n  count<-1\n  for(i in 1:length(unstate))\n  {\n  small<-outdata[outdata$State==unstate[i],]\n  small<-subset(small, select=c(2,7,outcol))\n  bad<-!is.na(as.numeric(small[,3]))\n  small<-small[bad,]\n  small[,3]<-as.numeric(small[,3])\n  mm2<-small[order(small[,3],small[,1]),]\n  \n  if(num==\"best\")\n  {\n    mm3[count,]<-subset(mm2[1,], select=c(1,2))\n    count<-count+1\n    \n  }\n  else if(num==\"worst\")\n  {\n    \n    len<-dim(mm2)\n    mm3[count,]<-subset(mm2[len[1],], select=c(1,2))\n   count<-count+1\n   \n  }\n  else\n  {\n    if(as.numeric(num)<=dim(mm2))\n    {\n      mm3[count,]<-mm2[as.numeric(num),]\n      count<-count+1\n    }\n    else\n    {\n      mm3[count,2]<-unstate[i]\n     mm3[count,1]<-NA\n     count<-count+1\n      \n    }\n  }\n  ##print(mm2)\n  ##mm\n  }\n\n  options(warn=0)\n  mm3<-mm3[order(mm3[,2]),]\nreturn(mm3)\n  \n}",
+    "created" : 1416395798484.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "1645458607",
+    "id" : "4A88FC03",
+    "lastKnownWriteTime" : 1416467553,
+    "path" : "C:/Project/analysis/rprog-data-ProgAssignment3-data/rankall.R",
+    "project_path" : "rprog-data-ProgAssignment3-data/rankall.R",
+    "properties" : {
+        "tempName" : "Untitled1"
+    },
+    "source_on_save" : false,
+    "type" : "r_source"
+}
